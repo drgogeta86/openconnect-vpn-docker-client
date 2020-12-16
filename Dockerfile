@@ -1,9 +1,9 @@
 FROM docker.io/library/ubuntu:bionic
-ARG site-name
+ARG SITE_NAME
 
 RUN apt-get update && \
     apt-get install -y ike ike-qtgui
 
-ADD VPN/${site-name}.vpn /root/.ike/sites/${site-name}
+COPY VPN/${SITE_NAME}.vpn /root/.ike/sites/${SITE_NAME}
 
 ENTRYPOINT iked -d 6 -F
