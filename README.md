@@ -5,15 +5,18 @@ You cannot use podman (even rootfull), usefull to connect against multifactor lo
 ``` shell
 
 # First build (don't forget the last dot)
-sudo docker build -t vpn-openconnect --build-arg "SITE_NAME=${VPN_SITE_NAME}" .
+sudo docker build -t vpn-openconnect .
 
 # Start Daemon
 AUTHORIZED_SSH_KEY=$(cat ~/.ssh/id_ecdsa.pub)
-docker run --init --rm -e AUTHORIZED_SSH_KEY="${AUTHORIZED_SSH_KEY}" -d --name vpn-openconnect -p12222:22 --device=/dev/net/tun --cap-add=NET_ADMIN --cap-add=DAC_READ_SEARCH  --cap-add=CAP_SYS_CHROOT  vpn-ike
+docker run --init --rm -e AUTHORIZED_SSH_KEY="${AUTHORIZED_SSH_KEY}" -d --name vpn-openconnect -p1111:22 --device=/dev/net/tun --cap-add=NET_ADMIN --cap-add=DAC_READ_SEARCH  --cap-add=CAP_SYS_CHROOT  vpn-ike
 
-# Start VPN connexion (CTRL+C top stop)
-# This will ask for key password
-sudo docker exec -it vpn-openconnect ikec -r "${VPN_SITE_NAME}" -u "${VPN_USER}" -p "${VPN_PASSWORD}" -a 
+# Start VPN container
+sudo docker run --init --rm -e AUTHORIZED_SSH_KEY="${AUTHORIZED_SSH_KEY}" -d --name vpn-openconnect -p1111:22 --device=/dev/net/tun --cap-add=NET_ADMIN --cap-add=DAC_READ_SEARCH  --cap-add=CAP_SYS_CHROOT  vpn-openconnect
+
+# launch VPN container
+
+ssh -XC -p1111 -lroot localhost openconnect-pulse-gui --insecure https://vpnssl.mydomain.com/MYVPN/ 
 
 # Stop Daemon
 ```

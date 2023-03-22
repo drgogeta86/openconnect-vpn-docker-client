@@ -1,5 +1,4 @@
 FROM docker.io/library/ubuntu:bionic
-ARG SITE_NAME
 
 ENV TZ Europe/Rome
 
@@ -38,7 +37,6 @@ RUN { \
     } > /usr/local/bin/entry_point.sh; \
     chmod +x /usr/local/bin/entry_point.sh;
 
-COPY VPN/Planet.vpn /root/.ike/sites/${SITE_NAME}
 EXPOSE 22
 
 ENTRYPOINT ["entry_point.sh"]
